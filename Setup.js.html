@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>TestFramework.js - Documentation</title>
+    <title>Setup.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">TestFramework.js</h1>
+    <h1 class="page-title">Setup.js</h1>
     
 
     
@@ -40,103 +40,77 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Custom Test Framework
- * This is a custom test framework made to run simple test cases.
- * This supports basic assertions and logs a well formatted report.
- * 
- * @todo Better Error Reporting
+ * Creates a menu entry in the Google Docs UI when the document is opened.
+ * This method is only used by the regular add-on, and is never called by
+ * the mobile add-on version.
+ *
+ * @param {object} e The event parameter for a simple onOpen trigger. To
+ *     determine which authorization mode (ScriptApp.AuthMode) the trigger is
+ *     running in, inspect e.authMode.
  */
-var TestFramework = {
-  testList: [],
+function onOpen(e) {
+  SpreadsheetApp.getUi().createAddonMenu()
+    .addItem('Start', 'showSidebar')
+    .addToUi();
 }
 
 /**
- * Test Function Decorator
- * prepareTest decorates the function with  a try/catch block and 
- * adds logging functionality.
- * 
- * @param {function} test Test function
- * @param {string} description Test description
- * @return {function} Decorated test function with try/catch block and logging
+ * Runs when the add-on is installed.
+ * This method is only used by the regular add-on, and is never called by
+ * the mobile add-on version.
+ *
+ * @param {object} e The event parameter for a simple onInstall trigger. To
+ *     determine which authorization mode (ScriptApp.AuthMode) the trigger is
+ *     running in, inspect e.authMode. (In practice, onInstall triggers always
+ *     run in AuthMode.FULL, but onOpen triggers may be AuthMode.LIMITED or
+ *     AuthMode.NONE.)
  */
-TestFramework.prepareTest = function (test, description) {
-  return function () {
-    try {
-      test();
-      Logger.log("Pass: " + description);
-      return true;
-    }
-    catch (err) {
-      Logger.log("Fail: " + description + " with error message: " + err.message);
-      return false;
-    }
-  }
+function onInstall(e) {
+  onOpen(e);
 }
 
 /**
- * Test register
- * Prepares the test function and adds the test to the test list 
- * 
- * @param {string} description Test description
- * @param {function} testFn Test Function
+ * Opens a sidebar in the documen-t containing the add-on's user interface.
+ * This method is only used by the regular add-on, and is never called by
+ * the mobile add-on version.
  */
-TestFramework.test = function (description, testFn) {
-  this.testList.push({
-    description: description,
-    test: this.prepareTest(testFn, description)
+function showSidebar() {
+  var ui = HtmlService.createHtmlOutputFromFile('sidebar')
+    .setTitle('Workbook.open');
+  SpreadsheetApp.getUi().showSidebar(ui);
+}
+
+/**
+ * Configure QUnit
+ */
+QUnit.config({
+  title: "File System",
+  requireExpects: true,
+  hidepassed: true,
+  cssUrl: "https://raw.github.com/jquery/qunit/master/qunit/qunit.css"
+});
+
+/**
+ * Registers QUnit helpers globally
+ * Imports the following functions:
+ * ok, equal, notEqual, deepEqual, notDeepEqual, strictEqual,
+ * notStrictEqual, throws, module, test, asyncTest, expect
+ */
+QUnit.helpers(this);
+
+/**
+ * HTML Test Report Generation Handler
+ * @param {object} e The event parameter for a simple get trigger. 
+ */
+function doGet(e) {
+  QUnit.urlParams(e.parameter);
+  QUnit.config({
+    title: "File System" // Sets the title of the test page.
   });
-}
+  QUnit.load(testFunctions);
 
-/**
- * Test Runner
- * Runs all the registered tests and logs the results
- */
-TestFramework.runTests = function () {
-
-  Logger.log(" ==== Starting Tests ====");
-  for (var i = 0; i &lt; this.testList.length; i++) {
-    var test = this.testList[i].test;
-    var description = this.testList[i].description;
-    Logger.log("==== Start Test " + i + 1 + " / " + this.testList.length + " - " + description + "====");
-    test();
-    Logger.log("==== Finish Test " + i + 1 + " / " + this.testList.length + " - " + description + "====");
-  }
-  Logger.log("==== Finished " + this.testList.length + " Tests  ====");
-}
-
-/**
- * Basic Assertion Test
- * 
- * @param {boolean} assertion Assertion Test
- * @param {string} message Assertion message
- */
-TestFramework.assert = function (assertion, message) {
-  if (assertion) {
-    if (message)
-      message = "Assertion passed: " + message;
-    else
-      message = "Assertion passed";
-    Logger.log(message);
-    return;
-  }
-
-  if (message)
-    message = "Assertion failed: " + message;
-  else
-    message = "Assertion failed";
-
-  throw Error(message);
-}
-
-/**
- * TestFramework Reset
- * Unregisters all registered tests
- */
-TestFramework.reset = function () {
-  this.testList = [];
-}
-
-</code></pre>
+  return QUnit.getHtml();
+};</code></pre>
         </article>
     </section>
 
@@ -148,7 +122,7 @@ TestFramework.reset = function () {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Jun 02 2020 11:03:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Jun 02 2020 11:05:05 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
