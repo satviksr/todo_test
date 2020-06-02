@@ -1,9 +1,8 @@
 {
-    
-    "include": ["FileSystem"]
     "plugins": [],
     "recurseDepth": 10,
     "source": {
+        "include": ["FileSystem"],
         "includePattern": ".+\\.js(doc|x)?$",
         "excludePattern": "(^|\\/|\\\\)_"
     },
