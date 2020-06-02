@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>WorkbookTests.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#api_workbook_open">api_workbook_open</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#api_workbook_open_">api_workbook_open_</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#doGet">doGet</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#FileSystem">FileSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#onInstall">onInstall</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#onOpen">onOpen</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#openURL">openURL</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#showSidebar">showSidebar</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#TestFramework">TestFramework</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#USE_FILEMAPPER_MOCKER">USE_FILEMAPPER_MOCKER</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#VBAFileMapperMocker">VBAFileMapperMocker</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#workbook_run_all_tests">workbook_run_all_tests</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">WorkbookTests.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * For Testing only. Open spreadsheet in a new tab. 
+ *
+ * @param {string} path The local file path in the Excel file
+ */
+function api_workbook_open(path) {
+  FileSystem.api_workbook_open(path);
+}
+
+/**
+ * Unit Tests
+ * Tests for Workbook are written using custom TestFramework 
+ * because QUnit doesn't support bounded scripts
+ */
+function workbook_run_all_tests() {
+
+  TestFramework.reset();
+
+  TestFramework.test(
+    "check if filemapper returns correct file and mimeType when file is present",
+    function () {
+      var fileName = 'c:\\User\\Desktop\\marks.xlsx';
+      var fileId = FileMapper.getFileId(FileSystem.current_directory,
+        fileName,
+        MimeType.GOOGLE_SHEETS);
+      TestFramework.assert(fileId == "1i3M1cYfubmXnosn5LJQmHCghBzhPBrDjBQszkWvZkxA", "FileMapper returns correct file id");
+      var file = DriveApp.getFileById(fileId);
+      TestFramework.assert(file.getMimeType() == MimeType.GOOGLE_SHEETS, "FileMapper returns correct mimeType");
+    });
+
+  TestFramework.test(
+    "single call to workbook.open() when file is present",
+    function () {
+      var fileName = 'c:\\User\\Desktop\\marks.xlsx';
+      var file = FileSystem.api_workbook_open(fileName);
+    });
+
+  TestFramework.test(
+    "multiple calls to workbook.open() when files are present",
+    function () {
+      var fileName1 = 'c:\\User\\Desktop\\marks.xlsx';
+      var fileName2 = 'c:\\User\\Desktop\\attendance.xlsx';
+      var file2 = FileSystem.api_workbook_open(fileName2);
+      var file1 = FileSystem.api_workbook_open(fileName1);
+    });
+
+  TestFramework.test(
+    "single call to workbook.open() when file is not present",
+    function () {
+      var fileName1 = 'FileNotExist.xlsx';
+      var file1 = FileSystem.api_workbook_open(fileName1);
+    });
+
+  TestFramework.runTests();
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Jun 02 2020 11:03:38 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
