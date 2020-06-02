@@ -1,4 +1,6 @@
 {
+    
+    "include": ["FileSystem"]
     "plugins": [],
     "recurseDepth": 10,
     "source": {
